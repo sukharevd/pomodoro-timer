@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/alarm.svg</file>
+        <file>images/coffee_break.png</file>
+        <file>images/hamburger.png</file>
+        <file>images/tomato.png</file>
+        <file>images/pause.png</file>
+    </qresource>
+</RCC>
