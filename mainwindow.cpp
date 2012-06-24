@@ -63,7 +63,7 @@ void MainWindow::createActions()
     startCoffeeBreakAction = new QAction(QIcon(":/images/coffee_break.png"), tr("Start coffee &break"), this);
     connect(startCoffeeBreakAction, SIGNAL(triggered()), this, SLOT(start_coffee_break()));
 
-    startLongBreakAction = new QAction(QIcon(":/images/long_break.png"), tr("Start &long break"), this);
+    startLongBreakAction = new QAction(QIcon(":/images/hamburger.png"), tr("Start &long break"), this);
     connect(startLongBreakAction, SIGNAL(triggered()), this, SLOT(start_long_break()));
 
 //    minimizeAction = new QAction(tr("Mi&nimize"), this);
