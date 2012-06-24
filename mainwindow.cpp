@@ -57,13 +57,13 @@ MainWindow::~MainWindow()
 
 void MainWindow::createActions()
  {
-    startPomodoroAction = new QAction(tr("Start &pomodoro"), this);
+    startPomodoroAction = new QAction(QIcon(":/images/tomato.png"), tr("Start &pomodoro"), this);
     connect(startPomodoroAction, SIGNAL(triggered()), this, SLOT(start_pomodoro()));
 
-    startCoffeeBreakAction = new QAction(tr("Start coffee &break"), this);
+    startCoffeeBreakAction = new QAction(QIcon(":/images/coffee_break.png"), tr("Start coffee &break"), this);
     connect(startCoffeeBreakAction, SIGNAL(triggered()), this, SLOT(start_coffee_break()));
 
-    startLongBreakAction = new QAction(tr("Start &long break"), this);
+    startLongBreakAction = new QAction(QIcon(":/images/long_break.png"), tr("Start &long break"), this);
     connect(startLongBreakAction, SIGNAL(triggered()), this, SLOT(start_long_break()));
 
 //    minimizeAction = new QAction(tr("Mi&nimize"), this);
@@ -109,7 +109,7 @@ void MainWindow::timer_ticked()
     if (!time_left) {
         timer->stop();
         time_left = 0;
-        trayIcon->setIcon(QIcon(":/images/alarm.svg"));
+        trayIcon->setIcon(QIcon(":/images/alarm.png"));
         showMessage();
     }
 }
@@ -147,7 +147,7 @@ void MainWindow::wake_up(QSystemTrayIcon::ActivationReason reason) {
 void MainWindow::showMessage()
 {
     QSystemTrayIcon::MessageIcon icon = QSystemTrayIcon::MessageIcon(QSystemTrayIcon::Information);
-    trayIcon->showMessage("Time out", "Time out", icon, 10 * 1000);
+    trayIcon->showMessage("Time out", "Time out", icon, 60 * 1000);
 }
 
 void MainWindow::pause() {
