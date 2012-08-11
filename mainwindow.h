@@ -25,10 +25,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "qtimelabel.h"
 #include <QSystemTrayIcon>
-#include <QTimer>
-#include <time.h>
+#include "qtimelabel.h"
+#include "pomodoro.h"
 
 namespace Ui {
 class MainWindow;
@@ -43,19 +42,15 @@ public:
     ~MainWindow();
 
 private:
-    void createActions();
-    void createTrayIcon();
-    void showMessage();
-    void pause();
-
-    time_t time_left;
-    QTimer* timer;
+    Pomodoro* pomodoro;
 
     Ui::MainWindow *ui;
 
     QAction* startPomodoroAction;
     QAction* startCoffeeBreakAction;
     QAction* startLongBreakAction;
+    QAction* pauseAction;
+    QAction* resumeAction;
 //    QAction *minimizeAction;
 //    QAction *maximizeAction;
 //    QAction *restoreAction;
@@ -64,13 +59,22 @@ private:
     QSystemTrayIcon *trayIcon;
     QMenu *trayIconMenu;
     QTimeLabel* timeLine;
+    QIcon lastIcon;
+
+    void createActions();
+    void createTrayIcon();
+
+public slots:
+    void updateTime();
 
 private slots:
-    void timer_ticked();
-    void start_pomodoro();
-    void start_coffee_break();
-    void start_long_break();
-    void wake_up(QSystemTrayIcon::ActivationReason);
+    void startPomodoro();
+    void startShortBreak();
+    void startLongBreak();
+    void showTimeOut();
+    void pause();
+    void resume();
+    void handleTrayIconActivation(QSystemTrayIcon::ActivationReason);
 };
 
 #endif // MAINWINDOW_H

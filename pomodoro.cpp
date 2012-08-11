@@ -71,11 +71,11 @@ void Pomodoro::resume()
 void Pomodoro::timer_ticked()
 {
     time_left--;
+    emit tick();
     if (!time_left) {
         timer->stop();
         emit timeout();
     }
-    emit tick();
 }
 
 time_t Pomodoro::getTimeLeft()

@@ -29,15 +29,13 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    //ui->setupUi(this);
-    time_left = 0;
-    timer = new QTimer();
-    timer->setInterval(1000);
-    connect(timer, SIGNAL(timeout()), this, SLOT(timer_ticked()));
+    pomodoro = new Pomodoro(this);
+    connect(pomodoro, SIGNAL(tick()), this, SLOT(updateTime()));
+    connect(pomodoro, SIGNAL(timeout()), this, SLOT(showTimeOut()));
 
-    setFixedSize(300, 200);
+    setFixedSize(400, 250);
     timeLine = new QTimeLabel(this);
-    timeLine->setText("Start pomodoro now");
+    timeLine->setText("Start pomodoro");
     timeLine->setFixedSize(this->size());
     timeLine->setAlignment(Qt::AlignCenter);
 
@@ -49,7 +47,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     createActions();
     createTrayIcon();
-    connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(wake_up(QSystemTrayIcon::ActivationReason)));
+    connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(handleTrayIconActivation(QSystemTrayIcon::ActivationReason)));
     QIcon icon = QIcon(":/images/tomato.png");
     trayIcon->setIcon(icon);
     trayIcon->show();
@@ -65,22 +63,19 @@ MainWindow::~MainWindow()
 void MainWindow::createActions()
  {
     startPomodoroAction = new QAction(QIcon(":/images/tomato.png"), tr("Start &pomodoro"), this);
-    connect(startPomodoroAction, SIGNAL(triggered()), this, SLOT(start_pomodoro()));
+    connect(startPomodoroAction, SIGNAL(triggered()), this, SLOT(startPomodoro()));
 
     startCoffeeBreakAction = new QAction(QIcon(":/images/coffee_break.png"), tr("Start coffee &break"), this);
-    connect(startCoffeeBreakAction, SIGNAL(triggered()), this, SLOT(start_coffee_break()));
+    connect(startCoffeeBreakAction, SIGNAL(triggered()), this, SLOT(startShortBreak()));
 
     startLongBreakAction = new QAction(QIcon(":/images/hamburger.png"), tr("Start &long break"), this);
-    connect(startLongBreakAction, SIGNAL(triggered()), this, SLOT(start_long_break()));
+    connect(startLongBreakAction, SIGNAL(triggered()), this, SLOT(startLongBreak()));
 
-//    minimizeAction = new QAction(tr("Mi&nimize"), this);
-//    connect(minimizeAction, SIGNAL(triggered()), this, SLOT(hide()));
+    pauseAction = new QAction(QIcon(":/images/pause.png"), tr("Pause"), this);
+    connect(pauseAction, SIGNAL(triggered()), this, SLOT(pause()));
 
-//    maximizeAction = new QAction(tr("Ma&ximize"), this);
-//    connect(maximizeAction, SIGNAL(triggered()), this, SLOT(showMaximized()));
-
-//    restoreAction = new QAction(tr("&Restore"), this);
-//    connect(restoreAction, SIGNAL(triggered()), this, SLOT(showNormal()));
+    resumeAction = new QAction(QIcon(":/images/pause.png"), tr("Resume"), this);
+    connect(resumeAction, SIGNAL(triggered()), this, SLOT(resume()));
 
     quitAction = new QAction(tr("&Quit"), this);
     connect(quitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
@@ -92,80 +87,70 @@ void MainWindow::createTrayIcon()
     trayIconMenu->addAction(startPomodoroAction);
     trayIconMenu->addAction(startCoffeeBreakAction);
     trayIconMenu->addAction(startLongBreakAction);
+    trayIconMenu->addAction(pauseAction);
     trayIconMenu->addSeparator();
-    //trayIconMenu->addAction(minimizeAction);
-    //trayIconMenu->addAction(maximizeAction);
-    //trayIconMenu->addAction(restoreAction);
-    //trayIconMenu->addSeparator();
     trayIconMenu->addAction(quitAction);
 
     trayIcon = new QSystemTrayIcon(this);
     trayIcon->setContextMenu(trayIconMenu);
 }
 
-void MainWindow::timer_ticked()
+void MainWindow::updateTime()
 {
-    time_left--;
-    timeLine->setTime(time_left);
-    if (!time_left) {
-        timer->stop();
-        time_left = 0;
-        trayIcon->setIcon(QIcon(":/images/alarm.png"));
-        showMessage();
-    }
+    timeLine->setTime(pomodoro->getTimeLeft());
 }
 
-void MainWindow::start_coffee_break() {
+void MainWindow::startShortBreak()
+{
     trayIcon->setIcon(QIcon(":/images/coffee_break.png"));
-    timer->stop();
-    time_left = 5 * 60;
-    timer->start();
+    pomodoro->startShortBreak();
 }
 
-void MainWindow::start_long_break() {
+void MainWindow::startLongBreak()
+{
     trayIcon->setIcon(QIcon(":/images/hamburger.png"));
-    timer->stop();
-    time_left = 30 * 60;
-    timer->start();
+    pomodoro->startLongBreak();
 }
 
-void MainWindow::start_pomodoro() {
+void MainWindow::startPomodoro()
+{
     trayIcon->setIcon(QIcon(":/images/tomato.png"));
-    timer->stop();
-    time_left = 25 * 60;
-    timer->start();
+    pomodoro->startPomodoro();
 }
 
-void MainWindow::wake_up(QSystemTrayIcon::ActivationReason reason) {
+void MainWindow::handleTrayIconActivation(QSystemTrayIcon::ActivationReason reason)
+{
     if (reason == QSystemTrayIcon::Trigger) {
-        QSystemTrayIcon::MessageIcon icon = QSystemTrayIcon::MessageIcon(QSystemTrayIcon::Information);
-        trayIcon->showMessage("Time left information", timeLine->text(), icon, 3 * 1000);
         if (isHidden()) {
             show();
         } else {
             hide();
         }
-    } else if (reason == QSystemTrayIcon::DoubleClick) {
-        pause();
     }
 }
 
-void MainWindow::showMessage()
+void MainWindow::showTimeOut()
 {
     QSystemTrayIcon::MessageIcon icon = QSystemTrayIcon::MessageIcon(QSystemTrayIcon::Information);
+    trayIcon->setIcon(QIcon(":/images/alarm.png"));
     trayIcon->showMessage("Time out", "Time out", icon, 60 * 1000);
     timeLine->setText("Time out");
     show();
 }
 
-void MainWindow::pause() {
-    static QIcon lastIcon;
-    if (timer->isActive()) {
-        timer->stop();
-        lastIcon = trayIcon->icon();
-        trayIcon->setIcon(QIcon(":/images/pause.png"));
-    } else if (time_left > 0){
-        timer->start();
-        trayIcon->setIcon(lastIcon);
-    }
+void MainWindow::pause()
+{
+    pomodoro->pause();
+    lastIcon = trayIcon->icon();
+    trayIconMenu->insertAction(pauseAction, resumeAction);
+    trayIconMenu->removeAction(pauseAction);
+    trayIcon->setIcon(QIcon(":/images/pause.png"));
+}
+
+void MainWindow::resume()
+{
+    pomodoro->resume();
+    trayIconMenu->insertAction(resumeAction, pauseAction);
+    trayIconMenu->removeAction(resumeAction);
+    trayIcon->setIcon(lastIcon);
 }

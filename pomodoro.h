@@ -35,21 +35,21 @@ public:
     explicit Pomodoro(QObject *parent = 0);
     ~Pomodoro();
 
+    time_t getTimeLeft();
+    QTimer* getTimer();
+    bool isActive();
+
     void startPomodoro();
     void startShortBreak();
     void startLongBreak();
     void pause();
     void resume();
 
-    time_t getTimeLeft();
-    QTimer* getTimer();
-    bool isActive();
-
 signals:
     void tick();
     void timeout();
 
-public slots:
+private slots:
     void timer_ticked();
 
 private:
