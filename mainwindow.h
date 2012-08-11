@@ -27,7 +27,9 @@
 #include <QMainWindow>
 #include <QSystemTrayIcon>
 #include "qtimelabel.h"
-#include "pomodoro.h"
+#include "presenter.h"
+
+class Presenter;
 
 namespace Ui {
 class MainWindow;
@@ -41,40 +43,31 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-private:
-    Pomodoro* pomodoro;
+    void createActions();
+    void createTrayIcon();
+    void setStartPomodoroIcon();
+    void setStartShortBreakIcon();
+    void setStartLongBreakIcon();
+    void showTimeOutMessage();
+    void setPauseState();
+    void setResumeState();
+    void updateTime(time_t);
 
-    Ui::MainWindow *ui;
+private:
+    Presenter* presenter;
 
     QAction* startPomodoroAction;
-    QAction* startCoffeeBreakAction;
+    QAction* startShortBreakAction;
     QAction* startLongBreakAction;
     QAction* pauseAction;
     QAction* resumeAction;
-//    QAction *minimizeAction;
-//    QAction *maximizeAction;
-//    QAction *restoreAction;
-    QAction *quitAction;
+    QAction* quitAction;
 
+    Ui::MainWindow *ui;
     QSystemTrayIcon *trayIcon;
-    QMenu *trayIconMenu;
     QTimeLabel* timeLine;
     QIcon lastIcon;
 
-    void createActions();
-    void createTrayIcon();
-
-public slots:
-    void updateTime();
-
-private slots:
-    void startPomodoro();
-    void startShortBreak();
-    void startLongBreak();
-    void showTimeOut();
-    void pause();
-    void resume();
-    void handleTrayIconActivation(QSystemTrayIcon::ActivationReason);
 };
 
 #endif // MAINWINDOW_H

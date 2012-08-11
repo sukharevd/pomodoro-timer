@@ -36,7 +36,6 @@ public:
     ~Pomodoro();
 
     time_t getTimeLeft();
-    QTimer* getTimer();
     bool isActive();
 
     void startPomodoro();
@@ -50,7 +49,7 @@ signals:
     void timeout();
 
 private slots:
-    void timer_ticked();
+    void timerTicked();
 
 private:
     time_t time_left;

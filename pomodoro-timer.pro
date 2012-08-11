@@ -36,11 +36,13 @@ TEMPLATE = app
 SOURCES += main.cpp\
         qtimelabel.cpp \
         mainwindow.cpp \
-    pomodoro.cpp
+    pomodoro.cpp \
+    presenter.cpp
 
 HEADERS  += mainwindow.h \
     qtimelabel.h \
-    pomodoro.h
+    pomodoro.h \
+    presenter.h
 
 FORMS    += mainwindow.ui
 

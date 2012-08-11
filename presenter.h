@@ -21,35 +21,39 @@
  **
  ****************************************************************************/
 
-#include "qtimelabel.h"
+#ifndef PRESENTER_H
+#define PRESENTER_H
 
-QTimeLabel::QTimeLabel(QWidget *parent) :
-    QLabel(parent)
-{
-    font = new QFont("Courier New");
-    font->setItalic(true);
-}
+#include <QObject>
+#include <QSystemTrayIcon>
+#include "pomodoro.h"
+#include "mainwindow.h"
 
-QTimeLabel::~QTimeLabel()
-{
-    delete(font);
-}
+class MainWindow;
 
-QString formatTime1(int seconds)
-{
-    return QString("%1:%2").arg(seconds / 60, 2, 10, QChar('0')).arg(seconds % 60, 2, 10, QChar('0'));
-}
 
-void QTimeLabel::setTime(int time)
+class Presenter : public QObject
 {
-    font->setPixelSize(72);
-    setFont(*font);
-    QLabel::setText(formatTime1(time));
-}
+    Q_OBJECT
+public:
+    explicit Presenter(QObject *parent = 0);
+    void init(MainWindow*);
 
-void QTimeLabel::setText(const QString& text)
-{
-    font->setPixelSize(36);
-    setFont(*font);
-    QLabel::setText(text);
-}
+signals:
+    
+public slots:
+    void startPomodoro();
+    void startShortBreak();
+    void startLongBreak();
+    void timeOut();
+    void updateTime();
+    void pause();
+    void resume();
+    void handleTrayIconActivation(QSystemTrayIcon::ActivationReason);
+
+private:
+    MainWindow* mainWindow;
+    Pomodoro* pomodoro;
+};
+
+#endif // PRESENTER_H

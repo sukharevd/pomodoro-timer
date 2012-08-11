@@ -29,7 +29,7 @@ Pomodoro::Pomodoro(QObject *parent) :
     time_left = 0;
     timer = new QTimer();
     timer->setInterval(1000);
-    connect(timer, SIGNAL(timeout()), this, SLOT(timer_ticked()));
+    connect(timer, SIGNAL(timeout()), this, SLOT(timerTicked()));
 }
 
 Pomodoro::~Pomodoro()
@@ -68,7 +68,7 @@ void Pomodoro::resume()
     timer->start();
 }
 
-void Pomodoro::timer_ticked()
+void Pomodoro::timerTicked()
 {
     time_left--;
     emit tick();
