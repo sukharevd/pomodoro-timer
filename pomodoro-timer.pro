@@ -34,13 +34,20 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
+        qtimelabel.cpp \
         mainwindow.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    qtimelabel.h
 
 FORMS    += mainwindow.ui
 
-OTHER_FILES +=
+OTHER_FILES += \
+    icon.rc
 
 RESOURCES += \
     systray.qrc
+
+RC_FILE += icon.rc
+
+ICON = images/tomato.png

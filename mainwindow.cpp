@@ -35,9 +35,16 @@ MainWindow::MainWindow(QWidget *parent) :
     timer->setInterval(1000);
     connect(timer, SIGNAL(timeout()), this, SLOT(timer_ticked()));
 
-    timeLine = new QLabel(this);
+    setFixedSize(300, 200);
+    timeLine = new QTimeLabel(this);
+    timeLine->setText("Start pomodoro now");
+    timeLine->setFixedSize(this->size());
+    timeLine->setAlignment(Qt::AlignCenter);
+
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(timeLine);
+    setStyleSheet("background-color: #222; color: white");
+
     //setLayout(mainLayout);
 
     createActions();
@@ -96,16 +103,10 @@ void MainWindow::createTrayIcon()
     trayIcon->setContextMenu(trayIconMenu);
 }
 
-QString formatTime(int seconds) {
-    return QString("%1:%2").arg(seconds / 60, 2, 10, QChar('0')).arg(seconds % 60, 2, 10, QChar('0'));
-}
-
 void MainWindow::timer_ticked()
 {
     time_left--;
-    QString timeString;
-    timeString.append(QString("%1").arg(time_left));
-    timeLine->setText(formatTime(time_left));
+    timeLine->setTime(time_left);
     if (!time_left) {
         timer->stop();
         time_left = 0;
@@ -138,7 +139,12 @@ void MainWindow::start_pomodoro() {
 void MainWindow::wake_up(QSystemTrayIcon::ActivationReason reason) {
     if (reason == QSystemTrayIcon::Trigger) {
         QSystemTrayIcon::MessageIcon icon = QSystemTrayIcon::MessageIcon(QSystemTrayIcon::Information);
-        trayIcon->showMessage("Time left information", formatTime(time_left), icon, 3 * 1000);
+        trayIcon->showMessage("Time left information", timeLine->text(), icon, 3 * 1000);
+        if (isHidden()) {
+            show();
+        } else {
+            hide();
+        }
     } else if (reason == QSystemTrayIcon::DoubleClick) {
         pause();
     }
@@ -148,6 +154,8 @@ void MainWindow::showMessage()
 {
     QSystemTrayIcon::MessageIcon icon = QSystemTrayIcon::MessageIcon(QSystemTrayIcon::Information);
     trayIcon->showMessage("Time out", "Time out", icon, 60 * 1000);
+    timeLine->setText("Time out");
+    show();
 }
 
 void MainWindow::pause() {

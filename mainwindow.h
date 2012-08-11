@@ -25,9 +25,10 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QLabel>
+#include "qtimelabel.h"
 #include <QSystemTrayIcon>
 #include <QTimer>
+#include <time.h>
 
 namespace Ui {
 class MainWindow;
@@ -47,7 +48,8 @@ private:
     void showMessage();
     void pause();
 
-    int time_left;
+    time_t time_left;
+    QTimer* timer;
 
     Ui::MainWindow *ui;
 
@@ -59,11 +61,9 @@ private:
 //    QAction *restoreAction;
     QAction *quitAction;
 
-    QTimer* timer;
-
     QSystemTrayIcon *trayIcon;
     QMenu *trayIconMenu;
-    QLabel* timeLine;
+    QTimeLabel* timeLine;
 
 private slots:
     void timer_ticked();
