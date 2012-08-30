@@ -72,7 +72,8 @@ void Pomodoro::timerTicked()
 {
     time_left--;
     emit tick();
-    if (!time_left) {
+    if (time_left <= 0) {
+        time_left = 0;
         timer->stop();
         emit timeout();
     }

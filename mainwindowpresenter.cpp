@@ -87,8 +87,12 @@ void MainWindowPresenter::startPomodoro()
 
 void MainWindowPresenter::pause()
 {
-    pomodoro->pause();
-    systemTray->setPauseState();
+    if (pomodoro->isActive()) {
+        pomodoro->pause();
+        systemTray->setPauseState();
+    } else {
+        resume();
+    }
 }
 
 void MainWindowPresenter::resume()
