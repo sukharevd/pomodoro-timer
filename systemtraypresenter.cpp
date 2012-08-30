@@ -21,32 +21,47 @@
  **
  ****************************************************************************/
 
-#include "presenter.h"
+#include "systemtraypresenter.h"
 
-Presenter::Presenter(QObject *parent, Pomodoro* pomodoro) :
-    QObject(parent)
+SystemTrayPresenter::SystemTrayPresenter(QObject *parent, Pomodoro* pomodoro) :
+    QObject(parent),
+    pomodoro(pomodoro)
 {
-    this->pomodoro = pomodoro;
-    connect(this->pomodoro, SIGNAL(tick()), this, SLOT(updateTime()));
     connect(this->pomodoro, SIGNAL(timeout()), this, SLOT(timeOut()));
 }
 
-void Presenter::init(MainWindow* mainWindow)
+void SystemTrayPresenter::init(SystemTray* systemTray)
 {
-    this->mainWindow = mainWindow;
+    this->systemTray = systemTray;
 }
 
-void Presenter::updateTime()
+void SystemTrayPresenter::timeOut()
 {
-    mainWindow->updateTime(pomodoro->getTimeLeft());
+    systemTray->showTimeOutMessage();
 }
 
-void Presenter::timeOut()
+void SystemTrayPresenter::startShortBreak()
 {
-    mainWindow->showTimeOutMessage();
+    systemTray->setResumeState();
+    systemTray->setStartShortBreakIcon();
+    pomodoro->startShortBreak();
 }
 
-void Presenter::handleTrayIconActivation(QSystemTrayIcon::ActivationReason reason)
+void SystemTrayPresenter::startLongBreak()
+{
+    systemTray->setResumeState();
+    systemTray->setStartLongBreakIcon();
+    pomodoro->startLongBreak();
+}
+
+void SystemTrayPresenter::startPomodoro()
+{
+    systemTray->setResumeState();
+    systemTray->setStartPomodoroIcon();
+    pomodoro->startPomodoro();
+}
+
+void SystemTrayPresenter::handleTrayIconActivation(QSystemTrayIcon::ActivationReason reason)
 {
     if (reason == QSystemTrayIcon::Trigger) {
         if (mainWindow->isHidden()) {
@@ -55,4 +70,16 @@ void Presenter::handleTrayIconActivation(QSystemTrayIcon::ActivationReason reaso
             mainWindow->hide();
         }
     }
+}
+
+void SystemTrayPresenter::pause()
+{
+    pomodoro->pause();
+    systemTray->setPauseState();
+}
+
+void SystemTrayPresenter::resume()
+{
+    pomodoro->resume();
+    systemTray->setResumeState();
 }

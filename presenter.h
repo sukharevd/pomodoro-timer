@@ -36,19 +36,14 @@ class Presenter : public QObject
 {
     Q_OBJECT
 public:
-    explicit Presenter(QObject *parent = 0);
+    explicit Presenter(QObject *parent = 0, Pomodoro* pomodoro = 0);
     void init(MainWindow*);
 
 signals:
     
 public slots:
-    void startPomodoro();
-    void startShortBreak();
-    void startLongBreak();
     void timeOut();
     void updateTime();
-    void pause();
-    void resume();
     void handleTrayIconActivation(QSystemTrayIcon::ActivationReason);
 
 private:

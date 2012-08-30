@@ -23,7 +23,13 @@
 
 #include <QtGui/QApplication>
 #include <QMessageBox>
+#include "presenter.h"
 #include "mainwindow.h"
+#include "systemtraypresenter.h"
+#include "systemtray.h"
+
+class SystemTrayPresenter;
+class MainWindow;
 
 class MainWindow;
 int main(int argc, char *argv[])
@@ -35,7 +41,12 @@ int main(int argc, char *argv[])
     }
     QApplication::setQuitOnLastWindowClosed(false);
 
-    MainWindow w;
+    Pomodoro pomodoro;
+    Presenter presenter(&pomodoro);
+    SystemTrayPresenter trayPresenter(NULL, &pomodoro);
+    SystemTray tray(&trayPresenter);
+    MainWindow w(NULL, &presenter);
+    tray.show();
     w.show();
     
     return a.exec();

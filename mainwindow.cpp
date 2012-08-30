@@ -25,11 +25,11 @@
 #include "ui_mainwindow.h"
 #include <QVBoxLayout>
 
-MainWindow::MainWindow(QWidget *parent) :
+MainWindow::MainWindow(QWidget *parent, Presenter* presenter) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    presenter(presenter)
 {
-    presenter = new Presenter(this);
     presenter->init(this);
 
     setFixedSize(400, 250);
@@ -43,13 +43,6 @@ MainWindow::MainWindow(QWidget *parent) :
     setStyleSheet("background-color: #222; color: white");
     //setLayout(mainLayout);
 
-    createActions();
-    createTrayIcon();
-    connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), presenter, SLOT(handleTrayIconActivation(QSystemTrayIcon::ActivationReason)));
-    QIcon icon = QIcon(":/images/tomato.png");
-    trayIcon->setIcon(icon);
-    trayIcon->show();
-    setWindowIcon(icon);
     setWindowTitle("Pomodoro Timer");
 }
 
@@ -115,8 +108,8 @@ void MainWindow::setStartPomodoroIcon()
 void MainWindow::showTimeOutMessage()
 {
     QSystemTrayIcon::MessageIcon icon = QSystemTrayIcon::MessageIcon(QSystemTrayIcon::Information);
-    trayIcon->setIcon(QIcon(":/images/alarm.png"));
     trayIcon->showMessage("Time out", "Time out", icon, 60 * 1000);
+    trayIcon->setIcon(QIcon(":/images/alarm.png"));
     timeLine->setText("Time out");
     pauseAction->setVisible(false);
     show();

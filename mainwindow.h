@@ -40,33 +40,18 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QWidget *parent = 0, Presenter* presenter = 0);
     ~MainWindow();
 
     void createActions();
-    void createTrayIcon();
-    void setStartPomodoroIcon();
-    void setStartShortBreakIcon();
-    void setStartLongBreakIcon();
     void showTimeOutMessage();
-    void setPauseState();
-    void setResumeState();
     void updateTime(time_t);
 
 private:
     Presenter* presenter;
 
-    QAction* startPomodoroAction;
-    QAction* startShortBreakAction;
-    QAction* startLongBreakAction;
-    QAction* pauseAction;
-    QAction* resumeAction;
-    QAction* quitAction;
-
     Ui::MainWindow *ui;
-    QSystemTrayIcon *trayIcon;
     QTimeLabel* timeLine;
-    QIcon lastIcon;
 
 };
 
