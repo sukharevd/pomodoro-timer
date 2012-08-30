@@ -28,16 +28,19 @@
 #include <QSystemTrayIcon>
 #include "pomodoro.h"
 #include "mainwindow.h"
+#include "systemtray.h"
 
 class MainWindow;
-
+class SystemTray;
 
 class MainWindowPresenter : public QObject
 {
     Q_OBJECT
 public:
     explicit MainWindowPresenter(QObject *parent = 0, Pomodoro* pomodoro = 0);
-    void init(MainWindow*);
+    void initWindow(MainWindow*);
+    void init(SystemTray*);
+
 
 signals:
     
@@ -46,8 +49,16 @@ public slots:
     void updateTime();
     void handleTrayIconActivation(QSystemTrayIcon::ActivationReason);
 
+    void startPomodoro();
+    void startShortBreak();
+    void startLongBreak();
+    void pause();
+    void resume();
+    void quit();
+
 private:
     MainWindow* mainWindow;
+    SystemTray* systemTray;
     Pomodoro* pomodoro;
 };
 

@@ -53,7 +53,7 @@ public slots:
 
 
 private:
-    SystemTray* systemTray;
+
     Pomodoro* pomodoro;
 };
 

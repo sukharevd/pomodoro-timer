@@ -38,14 +38,12 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     pomodoro.cpp \
     systemtray.cpp \
-    systemtraypresenter.cpp \
     mainwindowpresenter.cpp
 
 HEADERS  += mainwindow.h \
     qtimelabel.h \
     pomodoro.h \
     systemtray.h \
-    systemtraypresenter.h \
     mainwindowpresenter.h
 
 FORMS    += mainwindow.ui

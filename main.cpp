@@ -25,27 +25,33 @@
 #include <QMessageBox>
 #include "mainwindowpresenter.h"
 #include "mainwindow.h"
-#include "systemtraypresenter.h"
+//#include "systemtraypresenter.h"
 #include "systemtray.h"
 #include <iostream>
 
-class SystemTrayPresenter;
+//class SystemTrayPresenter;
 class MainWindow;
 
 int main(int argc, char *argv[])
 {
+    std::cout << 00 << '\n';
     QApplication a(argc, argv);
     if (!QSystemTrayIcon::isSystemTrayAvailable()) {
         QMessageBox::critical(0, QObject::tr("Systray"), QObject::tr("I couldn't detect any system tray on this system."));
         return 1;
     }
+    std::cout << 01 << '\n';
     QApplication::setQuitOnLastWindowClosed(false);
+    std::cout << 0 << '\n';
     Pomodoro pomodoro;
+    std::cout << 1 << '\n';
     MainWindowPresenter presenter(NULL, &pomodoro);
+    std::cout << 2 << '\n';
     MainWindow w(NULL, &presenter);
-    SystemTrayPresenter trayPresenter(NULL, &pomodoro);
-    SystemTray tray(NULL, &trayPresenter);
-    tray.initMainWindowPresenter(&presenter);
+    std::cout << 3 << '\n';
+    //SystemTrayPresenter trayPresenter(NULL, &pomodoro);
+    SystemTray tray(NULL, &presenter);
+    //tray.initMainWindowPresenter(&presenter);
 
     tray.show();
     w.show();

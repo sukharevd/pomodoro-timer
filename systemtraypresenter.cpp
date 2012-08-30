@@ -22,58 +22,13 @@
  ****************************************************************************/
 
 #include "systemtraypresenter.h"
+#include <QShortcut>
 
 SystemTrayPresenter::SystemTrayPresenter(QObject *parent, Pomodoro* pomodoro) :
     QObject(parent),
     pomodoro(pomodoro)
 {
-    connect(this->pomodoro, SIGNAL(timeout()), this, SLOT(timeOut()));
+
+    //new QShortcut(Qt::Key_Right, this, SLOT(on_right_arrow()));
 }
 
-void SystemTrayPresenter::init(SystemTray* systemTray)
-{
-    this->systemTray = systemTray;
-}
-
-void SystemTrayPresenter::timeOut()
-{
-    systemTray->showTimeOutMessage();
-}
-
-void SystemTrayPresenter::startShortBreak()
-{
-    systemTray->setResumeState();
-    systemTray->setStartShortBreakIcon();
-    pomodoro->startShortBreak();
-}
-
-void SystemTrayPresenter::startLongBreak()
-{
-    systemTray->setResumeState();
-    systemTray->setStartLongBreakIcon();
-    pomodoro->startLongBreak();
-}
-
-void SystemTrayPresenter::startPomodoro()
-{
-    systemTray->setResumeState();
-    systemTray->setStartPomodoroIcon();
-    pomodoro->startPomodoro();
-}
-
-void SystemTrayPresenter::pause()
-{
-    pomodoro->pause();
-    systemTray->setPauseState();
-}
-
-void SystemTrayPresenter::resume()
-{
-    pomodoro->resume();
-    systemTray->setResumeState();
-}
-
-void SystemTrayPresenter::quit()
-{
-    exit(0);
-}

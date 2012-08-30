@@ -24,9 +24,9 @@
 #include "systemtray.h"
 #include <QMenu>
 
-SystemTray::SystemTray(QObject *parent, SystemTrayPresenter *systemTrayPresenter) :
+SystemTray::SystemTray(QObject *parent, MainWindowPresenter *presenter) :
     QSystemTrayIcon(parent),
-    presenter(systemTrayPresenter)
+    presenter(presenter)
 {
     QIcon icon = QIcon(":/images/tomato.png");
     setIcon(icon);
@@ -34,12 +34,9 @@ SystemTray::SystemTray(QObject *parent, SystemTrayPresenter *systemTrayPresenter
     presenter->init(this);
     createActions();
     createTrayIcon();
-}
 
-void SystemTray::initMainWindowPresenter(MainWindowPresenter* mainWindowPresenter)
-{
     connect(this, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
-            mainWindowPresenter, SLOT(handleTrayIconActivation(QSystemTrayIcon::ActivationReason)));
+            presenter, SLOT(handleTrayIconActivation(QSystemTrayIcon::ActivationReason)));
 }
 
 void SystemTray::createActions()

@@ -22,7 +22,7 @@
  ****************************************************************************/
 
 #include "mainwindowpresenter.h"
-#include <iostream>
+#include <QShortcut>
 
 MainWindowPresenter::MainWindowPresenter(QObject *parent, Pomodoro* pomodoro) :
     QObject(parent)
@@ -32,7 +32,7 @@ MainWindowPresenter::MainWindowPresenter(QObject *parent, Pomodoro* pomodoro) :
     connect(this->pomodoro, SIGNAL(timeout()), this, SLOT(timeOut()));
 }
 
-void MainWindowPresenter::init(MainWindow* mainWindow)
+void MainWindowPresenter::initWindow(MainWindow* mainWindow)
 {
     this->mainWindow = mainWindow;
 }
@@ -45,6 +45,7 @@ void MainWindowPresenter::updateTime()
 void MainWindowPresenter::timeOut()
 {
     mainWindow->showTimeOutMessage();
+    systemTray->showTimeOutMessage();
 }
 
 void MainWindowPresenter::handleTrayIconActivation(QSystemTrayIcon::ActivationReason reason)
@@ -56,4 +57,47 @@ void MainWindowPresenter::handleTrayIconActivation(QSystemTrayIcon::ActivationRe
             mainWindow->hide();
         }
     }
+}
+
+void MainWindowPresenter::init(SystemTray* systemTray)
+{
+    this->systemTray = systemTray;
+}
+
+void MainWindowPresenter::startShortBreak()
+{
+    systemTray->setResumeState();
+    systemTray->setStartShortBreakIcon();
+    pomodoro->startShortBreak();
+}
+
+void MainWindowPresenter::startLongBreak()
+{
+    systemTray->setResumeState();
+    systemTray->setStartLongBreakIcon();
+    pomodoro->startLongBreak();
+}
+
+void MainWindowPresenter::startPomodoro()
+{
+    systemTray->setResumeState();
+    systemTray->setStartPomodoroIcon();
+    pomodoro->startPomodoro();
+}
+
+void MainWindowPresenter::pause()
+{
+    pomodoro->pause();
+    systemTray->setPauseState();
+}
+
+void MainWindowPresenter::resume()
+{
+    pomodoro->resume();
+    systemTray->setResumeState();
+}
+
+void MainWindowPresenter::quit()
+{
+    exit(0);
 }

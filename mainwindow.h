@@ -40,11 +40,19 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0, MainWindowPresenter* presenter = 0);
+    explicit MainWindow(QWidget *parent = 0, MainWindowPresenter* mainWindowPresenter = 0);
     ~MainWindow();
 
     void showTimeOutMessage();
     void updateTime(time_t);
+
+public slots:
+    void startPomodoro();
+    void startShortBreak();
+    void startLongBreak();
+    void pause();
+    void resume();
+    void quit();
 
 private:
     MainWindowPresenter* presenter;

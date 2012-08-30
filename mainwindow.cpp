@@ -24,13 +24,14 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QVBoxLayout>
+#include <QShortcut>
 
-MainWindow::MainWindow(QWidget *parent, MainWindowPresenter* presenter) :
+MainWindow::MainWindow(QWidget *parent, MainWindowPresenter* apresenter) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    presenter(presenter)
+    presenter(apresenter)
 {
-    presenter->init(this);
+    presenter->initWindow(this);
 
     setFixedSize(400, 250);
     timeLine = new QTimeLabel(this);
@@ -41,6 +42,11 @@ MainWindow::MainWindow(QWidget *parent, MainWindowPresenter* presenter) :
     setStyleSheet("background-color: #222; color: white");
     setWindowTitle("Pomodoro Timer");
     setWindowIcon(QIcon(":/images/tomato.png"));
+    new QShortcut(Qt::Key_P, this, SLOT(startPomodoro()));
+    new QShortcut(Qt::Key_S, this, SLOT(startLongBreak()));
+    new QShortcut(Qt::Key_L, this, SLOT(startShortBreak()));
+    new QShortcut(Qt::Key_Space, this, SLOT(pause()));
+    new QShortcut(Qt::Key_Q, this, SLOT(quit()));
 }
 
 MainWindow::~MainWindow()
@@ -58,4 +64,28 @@ void MainWindow::showTimeOutMessage()
 {
     timeLine->setText("Time out");
     show();
+}
+
+void MainWindow::startPomodoro() {
+    presenter->startPomodoro();
+}
+
+void MainWindow::startShortBreak() {
+    presenter->startShortBreak();
+}
+
+void MainWindow::startLongBreak() {
+    presenter->startLongBreak();
+}
+
+void MainWindow::pause() {
+    presenter->pause();
+}
+
+void MainWindow::resume() {
+    presenter->resume();
+}
+
+void MainWindow::quit() {
+    presenter->quit();
 }

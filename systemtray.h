@@ -26,18 +26,16 @@
 
 #include <QSystemTrayIcon>
 #include <QAction>
-#include "systemtraypresenter.h"
 #include "mainwindowpresenter.h"
-
-class SystemTrayPresenter;
+//#include "mainwindow.h"
+class MainWindowPresenter;
 
 
 class SystemTray : public QSystemTrayIcon
 {
     Q_OBJECT
 public:
-    explicit SystemTray(QObject *parent = 0, SystemTrayPresenter* presenter = 0);
-    void initMainWindowPresenter(MainWindowPresenter* mainWindowPresenter = 0);
+    explicit SystemTray(QObject *parent = 0, MainWindowPresenter* presenter = 0);
 
     void createActions();
     void createTrayIcon();
@@ -53,7 +51,7 @@ signals:
 public slots:
     
 private:
-    SystemTrayPresenter* presenter;
+    MainWindowPresenter* presenter;
     QAction* startPomodoroAction;
     QAction* startShortBreakAction;
     QAction* startLongBreakAction;
