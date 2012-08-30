@@ -61,17 +61,6 @@ void SystemTrayPresenter::startPomodoro()
     pomodoro->startPomodoro();
 }
 
-void SystemTrayPresenter::handleTrayIconActivation(QSystemTrayIcon::ActivationReason reason)
-{
-    if (reason == QSystemTrayIcon::Trigger) {
-        if (mainWindow->isHidden()) {
-            mainWindow->show();
-        } else {
-            mainWindow->hide();
-        }
-    }
-}
-
 void SystemTrayPresenter::pause()
 {
     pomodoro->pause();
@@ -82,4 +71,9 @@ void SystemTrayPresenter::resume()
 {
     pomodoro->resume();
     systemTray->setResumeState();
+}
+
+void SystemTrayPresenter::quit()
+{
+    exit(0);
 }

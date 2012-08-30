@@ -21,11 +21,12 @@
  **
  ****************************************************************************/
 
-#ifndef PRESENTER_H
-#define PRESENTER_H
+#ifndef SYSTEM_TRAY_PRESENTER_H
+#define SYSTEM_TRAY_PRESENTER_H
 
 #include <QObject>
 #include <QSystemTrayIcon>
+#include <QMainWindow>
 #include "pomodoro.h"
 #include "systemtray.h"
 
@@ -46,14 +47,14 @@ public slots:
     void startShortBreak();
     void startLongBreak();
     void timeOut();
-    //void updateTime();
     void pause();
     void resume();
-    void handleTrayIconActivation(QSystemTrayIcon::ActivationReason);
+    void quit();
+
 
 private:
     SystemTray* systemTray;
     Pomodoro* pomodoro;
 };
 
-#endif // PRESENTER_H
+#endif // SYSTEM_TRAY_PRESENTER_H

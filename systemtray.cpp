@@ -1,16 +1,45 @@
+/****************************************************************************
+ **
+ ** Copyright (C) 2012 Dmitriy Sukharev.
+ ** All rights reserved.
+ ** Contact: Dmitriy Sukharev (ecuna@mail.ru)
+ **
+ ** This file is part of Pomodoro Timer.
+ **
+ ** Pomodoro Timer is free software: you can redistribute it and/or modify
+ ** it under the terms of the GNU Lesser General Public License as published
+ ** by the Free Software Foundation, either version 3 of the License, or
+ ** (at your option) any later version.
+ **
+ ** Pomodoro Timer is distributed in the hope that it will be useful,
+ ** but WITHOUT ANY WARRANTY; without even the implied warranty of
+ ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ ** GNU Lesser General Public License for more details.
+ **
+ ** You should have received a copy of the GNU Lesser General Public License
+ ** along with Pomodoro Timer.  If not, see <http://www.gnu.org/licenses/>.
+ **
+ ****************************************************************************/
+
 #include "systemtray.h"
+#include <QMenu>
 
 SystemTray::SystemTray(QObject *parent, SystemTrayPresenter *systemTrayPresenter) :
     QSystemTrayIcon(parent),
     presenter(systemTrayPresenter)
 {
+    QIcon icon = QIcon(":/images/tomato.png");
+    setIcon(icon);
+
     presenter->init(this);
     createActions();
     createTrayIcon();
-    connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), presenter, SLOT(handleTrayIconActivation(QSystemTrayIcon::ActivationReason)));
-    QIcon icon = QIcon(":/images/tomato.png");
-    setIcon(icon);
-    setWindowIcon(icon);
+}
+
+void SystemTray::initMainWindowPresenter(MainWindowPresenter* mainWindowPresenter)
+{
+    connect(this, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
+            mainWindowPresenter, SLOT(handleTrayIconActivation(QSystemTrayIcon::ActivationReason)));
 }
 
 void SystemTray::createActions()
@@ -26,12 +55,12 @@ void SystemTray::createActions()
     connect(startLongBreakAction, SIGNAL(triggered()), presenter, SLOT(startLongBreak()));
     connect(pauseAction, SIGNAL(triggered()), presenter, SLOT(pause()));
     connect(resumeAction, SIGNAL(triggered()), presenter, SLOT(resume()));
-    connect(quitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
+    connect(quitAction, SIGNAL(triggered()), presenter, SLOT(quit()));
  }
 
 void SystemTray::createTrayIcon()
 {
-    QMenu* trayIconMenu = new QMenu(this);
+    QMenu* trayIconMenu = new QMenu();
     trayIconMenu->addAction(startPomodoroAction);
     trayIconMenu->addAction(startShortBreakAction);
     trayIconMenu->addAction(startLongBreakAction);
@@ -43,11 +72,6 @@ void SystemTray::createTrayIcon()
     setContextMenu(trayIconMenu);
     pauseAction->setVisible(false);
     resumeAction->setVisible(false);
-}
-
-void SystemTray::updateTime(time_t time)
-{
-    setTime(time);
 }
 
 void SystemTray::setStartShortBreakIcon()
@@ -75,7 +99,7 @@ void SystemTray::showTimeOutMessage()
 
 void SystemTray::setPauseState()
 {
-    lastIcon = trayIcon->icon();
+    lastIcon = icon();
     pauseAction->setVisible(false);
     resumeAction->setVisible(true);
     setIcon(QIcon(":/images/pause.png"));

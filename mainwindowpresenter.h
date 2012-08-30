@@ -21,38 +21,34 @@
  **
  ****************************************************************************/
 
-#include "presenter.h"
+#ifndef MAIN_WINDOW_PRESENTER_H
+#define MAIN_WINDOW_PRESENTER_H
 
-Presenter::Presenter(QObject *parent, Pomodoro* pomodoro) :
-    QObject(parent)
-{
-    this->pomodoro = pomodoro;
-    connect(this->pomodoro, SIGNAL(tick()), this, SLOT(updateTime()));
-    connect(this->pomodoro, SIGNAL(timeout()), this, SLOT(timeOut()));
-}
+#include <QObject>
+#include <QSystemTrayIcon>
+#include "pomodoro.h"
+#include "mainwindow.h"
 
-void Presenter::init(MainWindow* mainWindow)
-{
-    this->mainWindow = mainWindow;
-}
+class MainWindow;
 
-void Presenter::updateTime()
-{
-    mainWindow->updateTime(pomodoro->getTimeLeft());
-}
 
-void Presenter::timeOut()
+class MainWindowPresenter : public QObject
 {
-    mainWindow->showTimeOutMessage();
-}
+    Q_OBJECT
+public:
+    explicit MainWindowPresenter(QObject *parent = 0, Pomodoro* pomodoro = 0);
+    void init(MainWindow*);
 
-void Presenter::handleTrayIconActivation(QSystemTrayIcon::ActivationReason reason)
-{
-    if (reason == QSystemTrayIcon::Trigger) {
-        if (mainWindow->isHidden()) {
-            mainWindow->show();
-        } else {
-            mainWindow->hide();
-        }
-    }
-}
+signals:
+    
+public slots:
+    void timeOut();
+    void updateTime();
+    void handleTrayIconActivation(QSystemTrayIcon::ActivationReason);
+
+private:
+    MainWindow* mainWindow;
+    Pomodoro* pomodoro;
+};
+
+#endif // MAIN_WINDOW_PRESENTER_H

@@ -27,9 +27,9 @@
 #include <QMainWindow>
 #include <QSystemTrayIcon>
 #include "qtimelabel.h"
-#include "presenter.h"
+#include "mainwindowpresenter.h"
 
-class Presenter;
+class MainWindowPresenter;
 
 namespace Ui {
 class MainWindow;
@@ -40,15 +40,14 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0, Presenter* presenter = 0);
+    explicit MainWindow(QWidget *parent = 0, MainWindowPresenter* presenter = 0);
     ~MainWindow();
 
-    void createActions();
     void showTimeOutMessage();
     void updateTime(time_t);
 
 private:
-    Presenter* presenter;
+    MainWindowPresenter* presenter;
 
     Ui::MainWindow *ui;
     QTimeLabel* timeLine;
